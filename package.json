@@ -1,0 +1,22 @@
+{
+  "name": "shopping-list-server",
+  "version": "1.0.0",
+  "description": "shopping list server application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "shopping",
+    "list",
+    "server",
+    "node",
+    "js"
+  ],
+  "author": "Daniel Varela",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  }
+}
