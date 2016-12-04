@@ -10,8 +10,23 @@ var Storage = {
     return item;
   },
   delete: function(id) {
-    this.items = this.items.filter(element => element.id != id);
-    return this.items;
+    for (let i = 0; i < this.items.length; i++) {
+      if(this.items[i].id == id) {
+        removeThis = this.items[i];
+        this.items.splice(i, 1);
+        return removeThis;
+      }
+    }
+    return 'error';
+  },
+  update: function(id, name) {
+    for (let i = 0; i < this.items.length; i++) {
+      if(this.items[i].id == id) {
+        this.items[i].name = name;
+        return this.items[i];
+      }
+    }
+    return storage.add(request.body.name);
   }
 };
 
@@ -43,30 +58,24 @@ app.post('/items', jsonParser, function(request, response) {
 });
 
 app.delete('/items/:id', jsonParser, function(request, response) {
-  if(!('id' in request.body)) {
-    console.log('this aint workin');
-    return response.sendStatus(400); //bad request
-  } else {
     var id = request.params.id;
-    storage.delete(id);
-    response.status(201).json(id);
-  }
+    var item = storage.delete(id);
+    if (item === 'error') {
+      response.status(404);
+    } else {
+      response.status(200).json(item);
+    }
 });
 
 app.put('/items/:id', jsonParser, function(request, response) {
-  if(!('name' in request.body)) {
+  if(!('name' in request.body) || !('id' in request.body)) {
     return response.sendStatus(400);
-  }
-  var id = request.params.id;
-  var name = request.params.name;
-  if(storage.items.id === id) {
-    var index = storage.items.indexOf(id);
-    console.log(index);
-    storage.items[index].name = name;
   } else {
-    var item = storage.add(request.body.name);
+    var id = request.params.id;
+    var name = request.body.name;
+    var item = storage.update(id, name);
   }
-  response.status(201).json(id)
+  response.status(200).json(item);
 });
 
 app.listen(process.env.PORT || 8080, process.env.IP);
