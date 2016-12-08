@@ -1,26 +1,31 @@
 {
   "name": "shopping-list-server",
   "version": "1.0.0",
-  "description": "shopping list server application",
+  "description": "",
   "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dotexe0/shopping-list-server.git"
   },
-  "keywords": [
-    "shopping",
-    "list",
-    "server",
-    "node",
-    "js"
-  ],
-  "author": "Daniel Varela",
+  "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dotexe0/shopping-list-server/issues"
+  },
+  "homepage": "https://github.com/dotexe0/shopping-list-server#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0"
   }
 }

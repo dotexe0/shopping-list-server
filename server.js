@@ -4,29 +4,27 @@ var jsonParser = bodyParser.json();
 
 var Storage = {
   add: function(name) {
-    var item = { name: name, id: this.setId };
+    var item = {name: name, id: this.setId};
     this.items.push(item);
     this.setId += 1;
     return item;
   },
   delete: function(id) {
-    for (let i = 0; i < this.items.length; i++) {
-      if(this.items[i].id == id) {
-        removeThis = this.items[i];
-        this.items.splice(i, 1);
-        return removeThis;
+    for (var i = 0; i < this.items.length; i++) {
+      if (this.items[i].id == id) {
+        return this.items.splice(i, 1);
       }
     }
-    return 'error';
+    return 'Error, item not found';
   },
-  update: function(id, name) {
-    for (let i = 0; i < this.items.length; i++) {
-      if(this.items[i].id == id) {
+  update: function(name, id) {
+    for (var i = 0; i < this.items.length; i++) {
+      if (this.items[i].id == id) {
         this.items[i].name = name;
         return this.items[i];
       }
     }
-    return storage.add(request.body.name);
+    return this.add(name);
   }
 };
 
@@ -35,7 +33,7 @@ var createStorage = function() {
   storage.items = [];
   storage.setId = 1;
   return storage;
-}
+};
 
 var storage = createStorage();
 
@@ -44,38 +42,42 @@ storage.add('Tomatoes');
 storage.add('Peppers');
 
 var app = express();
+
 app.use(express.static('public'));
+
 app.get('/items', function(request, response) {
   response.json(storage.items);
 });
 
 app.post('/items', jsonParser, function(request, response) {
-  if(!('name' in request.body)) {
-    return response.sendStatus(400); //bad request
+  var name = request.body.name;
+  if (!('name' in request.body)) {
+      return response.sendStatus(400);
   }
-  var item = storage.add(request.body.name);
-  response.status(201).json(item); // created
+  var item = storage.add(name);
+  response.status(201).json(item);
 });
 
-app.delete('/items/:id', jsonParser, function(request, response) {
-    var id = request.params.id;
-    var item = storage.delete(id);
-    if (item === 'error') {
-      response.status(404);
-    } else {
-      response.status(200).json(item);
-    }
-});
-
-app.put('/items/:id', jsonParser, function(request, response) {
-  if(!('name' in request.body) || !('id' in request.body)) {
-    return response.sendStatus(400);
-  } else {
-    var id = request.params.id;
-    var name = request.body.name;
-    var item = storage.update(id, name);
+app.delete('/items/:id', function(request, response) {
+  var id = request.params.id;
+  var item = storage.delete(id);
+  if (item == 'Error, item not found') {
+    return response.sendStatus(404);
   }
   response.status(200).json(item);
 });
 
+app.put('/items/:id', jsonParser, function(request, response) {
+  if (!('name' in request.body) || ('id' in request.body)) {
+    return response.sendStatus(400);
+  }
+  var name = request.body.name;
+  var id = request.params.id;
+  var item = storage.update(name, id);
+  response.status(200).json(item);
+});
+
 app.listen(process.env.PORT || 8080, process.env.IP);
+
+exports.app = app;
+exports.storage = storage;
